@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Enums\" />
+    <Folder Include="GlobalExceptions\" />
+    <Folder Include="Middlewares\" />
+    <Folder Include="Models\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="RepositoryInterfaces\" />
+  </ItemGroup>
+
+</Project>
