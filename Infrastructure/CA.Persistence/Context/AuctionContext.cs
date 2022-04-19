@@ -15,8 +15,8 @@ namespace CA.Persistence.Context
         public DbSet<Car> Cars { get; set; }
         public DbSet<Auction> Auctions { get; set; }
         public DbSet<Lot> Lots { get; set; }
-        public DbSet<LotBid> Bids { get; set; }
-        public DbSet<Transaction> UsersBalances { get; set; }
+        public DbSet<Bid> Bids { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         // Add shadow property for the user: account created at, updated at
 
