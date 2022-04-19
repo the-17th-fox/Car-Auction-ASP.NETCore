@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Auth\" />
-    <Folder Include="Enums\" />
-    <Folder Include="GlobalExceptions\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="Models\" />
     <Folder Include="Utilities\" />
     <Folder Include="RepositoryInterfaces\" />
