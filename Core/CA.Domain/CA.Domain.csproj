@@ -13,4 +13,8 @@
     <Folder Include="RepositoryInterfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
+  </ItemGroup>
+
 </Project>
