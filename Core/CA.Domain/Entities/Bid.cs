@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CA.Domain.Entities
 {
-    public class LotBid : BasicEntity
+    public class Bid : BasicEntity
     {
         public int LotId { get; set; }
         public Lot Lot { get; set; }
