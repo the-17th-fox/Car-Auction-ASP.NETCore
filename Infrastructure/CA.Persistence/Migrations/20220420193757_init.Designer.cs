@@ -4,6 +4,7 @@ using CA.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CA.Persistence.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    partial class AuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20220420193757_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +65,7 @@ namespace CA.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("BidAmount")
-                        .HasColumnType("decimal(9,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("LotId")
                         .HasColumnType("int");
@@ -101,10 +103,10 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("FaultedElectronicsAmount")
-                        .HasColumnType("smallint");
+                    b.Property<int>("FaultedElectronicsAmount")
+                        .HasColumnType("int");
 
-                    b.Property<short?>("Grade")
+                    b.Property<short>("Grade")
                         .HasColumnType("smallint");
 
                     b.Property<bool>("HasSuspensionMalfunctions")
@@ -118,7 +120,7 @@ namespace CA.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MSRP")
-                        .HasColumnType("decimal(9,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
@@ -131,20 +133,20 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OdometerValue")
-                        .HasColumnType("int");
+                    b.Property<short>("OdometerValue")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
 
-                    b.Property<short>("SmallScratchesAmount")
-                        .HasColumnType("smallint");
+                    b.Property<int>("SmallScratchesAmount")
+                        .HasColumnType("int");
 
-                    b.Property<decimal?>("StartingPrice")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<short>("StrongScratchesAmount")
-                        .HasColumnType("smallint");
+                    b.Property<int>("StrongScratchesAmount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -181,9 +183,6 @@ namespace CA.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("SoldFor")
-                        .HasColumnType("decimal(9,2)");
-
                     b.Property<short>("StatusCode")
                         .HasColumnType("smallint");
 
@@ -193,8 +192,6 @@ namespace CA.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuctionId");
-
-                    b.HasIndex("CarId");
 
                     b.ToTable("Lots");
                 });
@@ -208,7 +205,7 @@ namespace CA.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(9,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -493,15 +490,7 @@ namespace CA.Persistence.Migrations
                         .WithMany("Lots")
                         .HasForeignKey("AuctionId");
 
-                    b.HasOne("CA.Domain.Entities.Car", "Car")
-                        .WithMany("Lots")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Auction");
-
-                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("CA.Domain.Entities.Transaction", b =>
@@ -567,11 +556,6 @@ namespace CA.Persistence.Migrations
                 });
 
             modelBuilder.Entity("CA.Domain.Entities.Auction", b =>
-                {
-                    b.Navigation("Lots");
-                });
-
-            modelBuilder.Entity("CA.Domain.Entities.Car", b =>
                 {
                     b.Navigation("Lots");
                 });
