@@ -12,11 +12,9 @@ namespace CA.Domain.Entities
         public short Grade { get; set; }
         public decimal? Price { get; set; }
 
-        public int SellerId { get; set; }
         [ForeignKey("SellerId")]
-        public User Seller { get; set; }
-
-        public int? LotId { get; set; }
+        public User Seller { get; set; } = null!;
+        [ForeignKey("LotId")]
         public Lot? Lot { get; set; }
         
 

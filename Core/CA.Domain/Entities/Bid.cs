@@ -9,13 +9,12 @@ namespace CA.Domain.Entities
 {
     public class Bid : BasicEntity
     {
-        public int LotId { get; set; }
-        public Lot Lot { get; set; }
-
-        public int UserId { get; set; }
-        public User User { get; set; }
+        [ForeignKey("LotId")]
+        public Lot Lot { get; set; } = null!;
+        [ForeignKey("UserId")]
+        public User User { get; set; } = null!;
 
         public decimal BidAmount { get; set; }
-        public DateTime SetBidDate { get; } = DateTime.UtcNow;
+        public DateTime SetBidDate { get; private set; } = DateTime.UtcNow;
     }
 }

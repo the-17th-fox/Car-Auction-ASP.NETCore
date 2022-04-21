@@ -9,14 +9,11 @@ namespace CA.Domain.Entities
 {
     public class Lot : BasicEntity
     {
-        public int CarId { get; set; }
-        public Car Car { get; set; }
-
-        public int AuctionId { get; set; }
+        [ForeignKey("CarId")]
+        public Car Car { get; set; } = null!;
+        [ForeignKey("AuctionId")]
         public Auction? Auction { get; set; }
-
-        public int LastBidId { get; set; }
-        public LotBid? LastBid { get; set; }
+        public List<Bid> Bids { get; set; } = new();
 
         public decimal? StartingPrice { get { return Car.Price; } }
         public short StatusCode { get; set; } // Lot status codes

@@ -11,7 +11,8 @@ namespace CA.Domain.Entities
     {
         public string FirstName { get; set; } = String.Empty;
         public string LastName { get; set; } = String.Empty;
-        public List<Transaction> Transactions { get; set; }
-        public List<LotBid> Bids { get; set; } = new();
+        public List<Transaction> Transactions { get; set; } = new();
+        public List<Bid> Bids { get; set; } = new();
+        public List<Car> Car { get; set; } = new();
     }
 }

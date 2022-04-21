@@ -10,7 +10,6 @@ namespace CA.Domain.Entities
     {
         public string Title { get; set; } = String.Empty;
         public List<Lot> Lots { get; set; } = new();
-        public DateTime CreatedAt { get; } = DateTime.UtcNow;
         public DateTime OpenedAt { get; set; }
         public DateTime? ClosedAt { get; set; }
         public int StatusCode { get; set; } // Auction status codes
