@@ -26,13 +26,12 @@ namespace CA.Domain.Entities
         public decimal MSRP { get; set; }
         public string InternalColor { get; set; } = String.Empty;
         public string ExternalColor { get; set; } = String.Empty;
-        public short OdometerValue { get; set; }
+        public int OdometerValue { get; set; }
 
         // Malfunctions
-        public int SmallScratchesAmount { get; set; }
-        public int StrongScratchesAmount { get; set; }
-        public int FaultedElectronicsAmount { get; set; }
+        public short SmallScratchesAmount { get; set; }
+        public short StrongScratchesAmount { get; set; }
+        public short FaultedElectronicsAmount { get; set; }
         public bool HasSuspensionMalfunctions { get; set; }
-
     }
 }
