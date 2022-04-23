@@ -15,7 +15,11 @@ namespace CA.Domain.Entities
         public Auction? Auction { get; set; }
         public List<Bid> Bids { get; set; } = new();
 
-        public decimal? StartingPrice { get { return Car.Price; } }
+        [Column(TypeName = "decimal(9,2)")]
+        public decimal? SoldFor { get; set; }
         public short StatusCode { get; set; } // Lot status codes
+
+        [NotMapped]
+        public decimal? StartingPrice { get { return Car.StartingPrice; } }
     }
 }

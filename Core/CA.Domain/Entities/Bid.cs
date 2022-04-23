@@ -14,6 +14,7 @@ namespace CA.Domain.Entities
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
 
+        [Column(TypeName = "decimal(9,2)")]
         public decimal BidAmount { get; set; }
         public DateTime SetBidDate { get; private set; } = DateTime.UtcNow;
     }

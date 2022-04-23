@@ -16,6 +16,7 @@ namespace CA.Domain.Entities
         public short TransactionType { get; set; } // TransactionTypes enum
         public string? Message { get; set; }
 
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount { get; set; }
         public DateTime TimeStamp { get; private set; } = DateTime.UtcNow;
     }

@@ -9,20 +9,20 @@ namespace CA.Domain.Entities
 {
     public class Car : BasicEntity
     {
-        public short Grade { get; set; }
-        public decimal? Price { get; set; }
+        public short? Grade { get; set; }
+        [Column(TypeName = "decimal(9,2)")]
+        public decimal? StartingPrice { get; set; }
 
         [ForeignKey("SellerId")]
         public User Seller { get; set; } = null!;
-        [ForeignKey("LotId")]
-        public Lot? Lot { get; set; }
+        public List<Lot> Lots { get; set; } = new();
         
-
         // Car parameters
         public string Model { get; set; } = String.Empty;
         public string Manufacturer { get; set; } = String.Empty;
         public short ManufacturingYear { get; set; }
         public string VIN { get; set; } = String.Empty;
+        [Column(TypeName = "decimal(9,2)")]
         public decimal MSRP { get; set; }
         public string InternalColor { get; set; } = String.Empty;
         public string ExternalColor { get; set; } = String.Empty;
