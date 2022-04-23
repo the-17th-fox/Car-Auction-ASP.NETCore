@@ -9,6 +9,6 @@ namespace CA.Domain.RepositoryInterfaces
 {
     public interface ILotsRepository : IBasicRepository<Lot>
     {
-        public Task<bool> ChangeStatusAsync(int lotId, short statusCode);
+        public Task<bool> ChangeStatusAsync(Lot lot, short statusCode);
     }
 }

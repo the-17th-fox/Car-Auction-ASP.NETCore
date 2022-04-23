@@ -10,8 +10,12 @@ namespace CA.Domain.RepositoryInterfaces
 {
     public interface ICarsRepository : IBasicRepository<Car>
     {
-        public Task<Car> ChangeParametersAsync(int id, CarParametersModel parameters);
-        public Task<Car> ChangeManufacturingInfoAsync(int id, CarManufacturingInfoModel parameters);
-        public Task<Car> ChangeMalfunctionsInfoAsync(int id, CarMalfunctionsInfoModel parameters);
+        public Task<Car> ChangeParametersAsync(Car car, CarParametersModel parameters);
+        public Task<Car> ChangeManufacturingInfoAsync(Car car, CarManufacturingInfoModel parameters);
+        public Task<Car> ChangeMalfunctionsInfoAsync(Car car, CarMalfunctionsInfoModel parameters);
+
+        public Task<Car> AssignLotAsync(Car car);
+        public Task<Car> ChangeGradeAsync(Car car, short grade);
+        public Task<Car> SetPriceAsync(Car car, decimal price);
     }
 }

@@ -10,6 +10,6 @@ namespace CA.Domain.RepositoryInterfaces
 {
     public interface IUsersRepository
     {
-        public Task<User> ChangePersonalInfo(int id, UserPersonalInfoModel model);
+        public Task<User> ChangePersonalInfo(User user, UserPersonalInfoModel model);
     }
 }
