@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CA.Persistence.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    [Migration("20220420193757_init")]
+    [Migration("20220423131953_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,7 @@ namespace CA.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("BidAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<int>("LotId")
                         .HasColumnType("int");
@@ -103,10 +103,10 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FaultedElectronicsAmount")
-                        .HasColumnType("int");
+                    b.Property<short>("FaultedElectronicsAmount")
+                        .HasColumnType("smallint");
 
-                    b.Property<short>("Grade")
+                    b.Property<short?>("Grade")
                         .HasColumnType("smallint");
 
                     b.Property<bool>("HasSuspensionMalfunctions")
@@ -116,11 +116,8 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LotId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("MSRP")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
@@ -133,20 +130,20 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("OdometerValue")
-                        .HasColumnType("smallint");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("OdometerValue")
+                        .HasColumnType("int");
 
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SmallScratchesAmount")
-                        .HasColumnType("int");
+                    b.Property<short>("SmallScratchesAmount")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("StrongScratchesAmount")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("StartingPrice")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<short>("StrongScratchesAmount")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -156,10 +153,6 @@ namespace CA.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LotId")
-                        .IsUnique()
-                        .HasFilter("[LotId] IS NOT NULL");
 
                     b.HasIndex("SellerId");
 
@@ -183,6 +176,9 @@ namespace CA.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("SoldFor")
+                        .HasColumnType("decimal(9,2)");
+
                     b.Property<short>("StatusCode")
                         .HasColumnType("smallint");
 
@@ -192,6 +188,8 @@ namespace CA.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuctionId");
+
+                    b.HasIndex("CarId");
 
                     b.ToTable("Lots");
                 });
@@ -205,7 +203,7 @@ namespace CA.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -468,18 +466,11 @@ namespace CA.Persistence.Migrations
 
             modelBuilder.Entity("CA.Domain.Entities.Car", b =>
                 {
-                    b.HasOne("CA.Domain.Entities.Lot", "Lot")
-                        .WithOne("Car")
-                        .HasForeignKey("CA.Domain.Entities.Car", "LotId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("CA.Domain.Entities.User", "Seller")
                         .WithMany("Car")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Lot");
 
                     b.Navigation("Seller");
                 });
@@ -490,7 +481,15 @@ namespace CA.Persistence.Migrations
                         .WithMany("Lots")
                         .HasForeignKey("AuctionId");
 
+                    b.HasOne("CA.Domain.Entities.Car", "Car")
+                        .WithMany("Lots")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Auction");
+
+                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("CA.Domain.Entities.Transaction", b =>
@@ -560,12 +559,14 @@ namespace CA.Persistence.Migrations
                     b.Navigation("Lots");
                 });
 
+            modelBuilder.Entity("CA.Domain.Entities.Car", b =>
+                {
+                    b.Navigation("Lots");
+                });
+
             modelBuilder.Entity("CA.Domain.Entities.Lot", b =>
                 {
                     b.Navigation("Bids");
-
-                    b.Navigation("Car")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CA.Domain.Entities.User", b =>

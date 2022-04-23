@@ -31,7 +31,7 @@ namespace CA.Persistence.Context
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Car>()
-                .HasOne(c => c.Lot)
+                .HasMany(c => c.Lots)
                 .WithOne(l => l.Car)
                 .OnDelete(DeleteBehavior.NoAction);
 

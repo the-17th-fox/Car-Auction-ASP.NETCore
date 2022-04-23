@@ -180,6 +180,40 @@ namespace CA.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Grade = table.Column<short>(type: "smallint", nullable: true),
+                    StartingPrice = table.Column<decimal>(type: "decimal(9,2)", nullable: true),
+                    SellerId = table.Column<int>(type: "int", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ManufacturingYear = table.Column<short>(type: "smallint", nullable: false),
+                    VIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MSRP = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    InternalColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExternalColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OdometerValue = table.Column<int>(type: "int", nullable: false),
+                    SmallScratchesAmount = table.Column<short>(type: "smallint", nullable: false),
+                    StrongScratchesAmount = table.Column<short>(type: "smallint", nullable: false),
+                    FaultedElectronicsAmount = table.Column<short>(type: "smallint", nullable: false),
+                    HasSuspensionMalfunctions = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cars_AspNetUsers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -188,7 +222,7 @@ namespace CA.Persistence.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     TransactionType = table.Column<short>(type: "smallint", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -208,9 +242,10 @@ namespace CA.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuctionId = table.Column<int>(type: "int", nullable: true),
-                    StatusCode = table.Column<short>(type: "smallint", nullable: false),
                     CarId = table.Column<int>(type: "int", nullable: false),
+                    AuctionId = table.Column<int>(type: "int", nullable: true),
+                    SoldFor = table.Column<decimal>(type: "decimal(9,2)", nullable: true),
+                    StatusCode = table.Column<short>(type: "smallint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -222,6 +257,11 @@ namespace CA.Persistence.Migrations
                         column: x => x.AuctionId,
                         principalTable: "Auctions",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Lots_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -232,7 +272,7 @@ namespace CA.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LotId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    BidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BidAmount = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     SetBidDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -246,46 +286,6 @@ namespace CA.Persistence.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bids_Lots_LotId",
-                        column: x => x.LotId,
-                        principalTable: "Lots",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cars",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Grade = table.Column<short>(type: "smallint", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    SellerId = table.Column<int>(type: "int", nullable: false),
-                    LotId = table.Column<int>(type: "int", nullable: true),
-                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ManufacturingYear = table.Column<short>(type: "smallint", nullable: false),
-                    VIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MSRP = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InternalColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExternalColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OdometerValue = table.Column<short>(type: "smallint", nullable: false),
-                    SmallScratchesAmount = table.Column<int>(type: "int", nullable: false),
-                    StrongScratchesAmount = table.Column<int>(type: "int", nullable: false),
-                    FaultedElectronicsAmount = table.Column<int>(type: "int", nullable: false),
-                    HasSuspensionMalfunctions = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cars", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cars_AspNetUsers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Cars_Lots_LotId",
                         column: x => x.LotId,
                         principalTable: "Lots",
                         principalColumn: "Id");
@@ -341,13 +341,6 @@ namespace CA.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_LotId",
-                table: "Cars",
-                column: "LotId",
-                unique: true,
-                filter: "[LotId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cars_SellerId",
                 table: "Cars",
                 column: "SellerId");
@@ -356,6 +349,11 @@ namespace CA.Persistence.Migrations
                 name: "IX_Lots_AuctionId",
                 table: "Lots",
                 column: "AuctionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Lots_CarId",
+                table: "Lots",
+                column: "CarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
@@ -384,9 +382,6 @@ namespace CA.Persistence.Migrations
                 name: "Bids");
 
             migrationBuilder.DropTable(
-                name: "Cars");
-
-            migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
@@ -396,10 +391,13 @@ namespace CA.Persistence.Migrations
                 name: "Lots");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Auctions");
 
             migrationBuilder.DropTable(
-                name: "Auctions");
+                name: "Cars");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

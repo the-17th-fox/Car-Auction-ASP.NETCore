@@ -9,6 +9,7 @@ namespace CA.Domain.Enums
     public enum LotStatusCodes
     {
         Pending,
-        Sold
+        Sold,
+        Cancelled
     }
 }
