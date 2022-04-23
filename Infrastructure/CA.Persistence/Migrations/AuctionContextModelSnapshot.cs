@@ -114,9 +114,6 @@ namespace CA.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LotId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("MSRP")
                         .HasColumnType("decimal(9,2)");
 
@@ -154,10 +151,6 @@ namespace CA.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LotId")
-                        .IsUnique()
-                        .HasFilter("[LotId] IS NOT NULL");
 
                     b.HasIndex("SellerId");
 
@@ -471,18 +464,11 @@ namespace CA.Persistence.Migrations
 
             modelBuilder.Entity("CA.Domain.Entities.Car", b =>
                 {
-                    b.HasOne("CA.Domain.Entities.Lot", "Lot")
-                        .WithOne("Car")
-                        .HasForeignKey("CA.Domain.Entities.Car", "LotId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("CA.Domain.Entities.User", "Seller")
                         .WithMany("Car")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Lot");
 
                     b.Navigation("Seller");
                 });
@@ -579,9 +565,6 @@ namespace CA.Persistence.Migrations
             modelBuilder.Entity("CA.Domain.Entities.Lot", b =>
                 {
                     b.Navigation("Bids");
-
-                    b.Navigation("Car")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CA.Domain.Entities.User", b =>
