@@ -14,7 +14,6 @@ namespace CA.Domain.RepositoryInterfaces
         public Task<Car> ChangeManufacturingInfoAsync(Car car, CarManufacturingInfoModel parameters);
         public Task<Car> ChangeMalfunctionsInfoAsync(Car car, CarMalfunctionsInfoModel parameters);
 
-        public Task<Car> AssignLotAsync(Car car);
         public Task<Car> ChangeGradeAsync(Car car, short grade);
         public Task<Car> SetPriceAsync(Car car, decimal price);
     }

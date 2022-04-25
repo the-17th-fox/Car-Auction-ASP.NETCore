@@ -11,6 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 //Context
 builder.Services.AddDbContext<AuctionContext>(context => context.UseSqlServer(builder.Configuration["connectionStrings:DatabaseConnection"]));
 
+//Repositories and abstractions
+builder.Services.AddScoped<ILotsRepository, LotsEFRepository>();
+builder.Services.AddScoped<ICarsRepository, CarsEFRepository>();
+builder.Services.AddScoped<IAuctionsRepository, AuctionsEFRepository>();
+builder.Services.AddScoped<ITransactionsRepository, TransactionsEFRepository>();
+builder.Services.AddScoped<IBidsRepository, BidsEFRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersEFRepository>();
+
 //Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
