@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Auth\" />
-    <Folder Include="Enums\" />
-    <Folder Include="GlobalExceptions\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="Models\" />
     <Folder Include="Utilities\" />
     <Folder Include="RepositoryInterfaces\" />
@@ -19,6 +15,10 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
   </ItemGroup>
 
 </Project>
