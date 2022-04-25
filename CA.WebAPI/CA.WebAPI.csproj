@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\CA.Persistence\CA.Persistence.csproj" />
+    <ProjectReference Include="..\Core\CA.Domain\CA.Domain.csproj" />
   </ItemGroup>
 
 </Project>

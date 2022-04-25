@@ -1,4 +1,5 @@
 using CA.Domain.Entities;
+using CA.Domain.Middlewares;
 using CA.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionsHandlingMiddleware>();
 
 app.MapControllers();
 
