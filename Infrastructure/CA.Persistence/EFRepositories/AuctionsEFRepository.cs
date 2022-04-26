@@ -17,7 +17,7 @@ namespace CA.Persistence.EFRepositories
     public class AuctionsEFRepository : IAuctionsRepository
     {
         private readonly AuctionContext _context;
-        internal AuctionsEFRepository(AuctionContext context) => _context = context;
+        public AuctionsEFRepository(AuctionContext context) => _context = context;
 
         public async Task<bool> AddAsync(Auction entity)
         {

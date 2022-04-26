@@ -16,7 +16,7 @@ namespace CA.Persistence.EFRepositories
     public class BidsEFRepository : IBidsRepository
     {
         private readonly AuctionContext _context;
-        internal BidsEFRepository(AuctionContext context) => _context = context;
+        public BidsEFRepository(AuctionContext context) => _context = context;
 
         public async Task<bool> AddAsync(Bid entity)
         {

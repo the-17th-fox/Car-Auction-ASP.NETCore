@@ -16,7 +16,7 @@ namespace CA.Persistence.EFRepositories
     public class LotsEFRepository : ILotsRepository
     {
         private readonly AuctionContext _context;
-        internal LotsEFRepository(AuctionContext context) => _context = context;
+        public LotsEFRepository(AuctionContext context) => _context = context;
 
         public async Task<bool> AddAsync(Lot entity)
         {

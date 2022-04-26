@@ -17,7 +17,7 @@ namespace CA.Persistence.EFRepositories
     public class CarsEFRepository : ICarsRepository
     {
         private readonly AuctionContext _context;
-        internal CarsEFRepository(AuctionContext context) => _context = context;
+        public CarsEFRepository(AuctionContext context) => _context = context;
 
         public async Task<bool> AddAsync(Car entity)
         {
