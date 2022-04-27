@@ -23,7 +23,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                _context.Add(entity!);
+                await _context.AddAsync(entity!);
                 await _context.SaveChangesAsync();
                 return entity;
             }

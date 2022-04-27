@@ -22,7 +22,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                _context.Add(entity!);
+                await _context.AddAsync(entity!);
                 await _context.SaveChangesAsync();
                 return entity;
             }
@@ -50,7 +50,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                var query = _context.Auctions.AsNoTracking();
+                var query = _context.Bids.AsNoTracking();
                 return await PagedList<Bid>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
@@ -63,10 +63,11 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Auctions
+                return await _context.Bids
                     .AsNoTracking()
                     .Where(e => e.Id == id)
-                    .Include(e => e.Lots)
+                    .Include(e => e.User)
+                    .Include(e => e.Lot)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
@@ -79,9 +80,10 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Auctions
+                return await _context.Bids
                     .Where(e => e.Id == id)
-                    .Include(e => e.Lots)
+                    .Include(e => e.User)
+                    .Include(e => e.Lot)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
