@@ -18,31 +18,28 @@ namespace CA.Persistence.EFRepositories
         private readonly AuctionContext _context;
         public TransactionsEFRepository(AuctionContext context) => _context = context;
 
-        public async Task<bool> AddAsync(Transaction entity)
+        public async Task<IEnumerable<Transaction>> AddAsync(Transaction firstOperation, Transaction secondOperation)
         {
+            using var transaction = _context.Database.BeginTransaction();
             try
             {
-                _context.Add(entity!);
+                await _context.AddAsync(firstOperation!);
                 await _context.SaveChangesAsync();
-                return true;
+
+                await _context.AddAsync(secondOperation);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new List<Transaction>() { firstOperation, secondOperation };
             }
             catch (Exception)
             {
                 throw new CreatingFailedException();
             }
-        }
-
-        public async Task<bool> DeleteAsync(Transaction entity)
-        {
-            try
+            finally
             {
-                _context.Remove(entity!);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw new DeletingFailedException();
+                await transaction.RollbackAsync();
             }
         }
 
@@ -65,21 +62,6 @@ namespace CA.Persistence.EFRepositories
             {
                 return await _context.Transactions
                     .AsNoTracking()
-                    .Where(e => e.Id == id)
-                    .Include(e => e.User.Id)
-                    .FirstOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Transaction?> GetAsync(int id)
-        {
-            try
-            {
-                return await _context.Transactions
                     .Where(e => e.Id == id)
                     .Include(e => e.User.Id)
                     .FirstOrDefaultAsync();
