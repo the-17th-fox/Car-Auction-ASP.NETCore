@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class BidsEFRepository : IBidsRepository
+    public class BidsEFRepository : IGenericRepository<Bid>
     {
         private readonly AuctionContext _context;
         public BidsEFRepository(AuctionContext context) => _context = context;
 
-        public async Task<bool> AddAsync(Bid entity)
+        public async Task<Bid> AddAsync(Bid entity)
         {
             try
             {
                 _context.Add(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -32,13 +32,13 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<bool> DeleteAsync(Bid entity)
+        public async Task<Bid> DeleteAsync(Bid entity)
         {
             try
             {
                 _context.Remove(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -50,7 +50,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                var query = _context.Bids.AsNoTracking();
+                var query = _context.Auctions.AsNoTracking();
                 return await PagedList<Bid>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
@@ -63,11 +63,10 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Bids
+                return await _context.Auctions
                     .AsNoTracking()
                     .Where(e => e.Id == id)
-                    .Include(e => e.Lot)
-                    .Include(e => e.User)
+                    .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
@@ -80,15 +79,27 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Bids
+                return await _context.Auctions
                     .Where(e => e.Id == id)
-                    .Include(e => e.Lot)
-                    .Include(e => e.User)
+                    .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
                 throw new UnknownErrorException(e.Message);
+            }
+        }
+
+        public async Task<Bid> UpdateAsync(Bid auction)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return auction;
+            }
+            catch (Exception)
+            {
+                throw new UpdatingFailedException();
             }
         }
     }

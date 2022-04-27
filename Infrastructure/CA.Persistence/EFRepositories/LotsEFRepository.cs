@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class LotsEFRepository : ILotsRepository
+    public class LotsEFRepository : IGenericRepository<Lot>
     {
         private readonly AuctionContext _context;
         public LotsEFRepository(AuctionContext context) => _context = context;
 
-        public async Task<bool> AddAsync(Lot entity)
+        public async Task<Lot> AddAsync(Lot entity)
         {
             try
             {
                 _context.Add(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -32,27 +32,13 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<bool> ChangeStatusAsync(Lot lot, short statusCode)
-        {
-            try
-            {
-                lot.StatusCode = statusCode;
-                await _context.SaveChangesAsync();
-                return false;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<bool> DeleteAsync(Lot entity)
+        public async Task<Lot> DeleteAsync(Lot entity)
         {
             try
             {
                 _context.Remove(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -64,7 +50,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                var query = _context.Lots.AsNoTracking();
+                var query = _context.Auctions.AsNoTracking();
                 return await PagedList<Lot>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
@@ -77,12 +63,10 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Lots
+                return await _context.Auctions
                     .AsNoTracking()
                     .Where(e => e.Id == id)
-                    .Include(e => e.Car)
-                    .Include(e => e.Bids)
-                    .Include(e => e.Auction)
+                    .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
@@ -95,16 +79,27 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Lots
+                return await _context.Auctions
                     .Where(e => e.Id == id)
-                    .Include(e => e.Car)
-                    .Include(e => e.Bids)
-                    .Include(e => e.Auction)
+                    .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
                 throw new UnknownErrorException(e.Message);
+            }
+        }
+
+        public async Task<Lot> UpdateAsync(Lot auction)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return auction;
+            }
+            catch (Exception)
+            {
+                throw new UpdatingFailedException();
             }
         }
     }

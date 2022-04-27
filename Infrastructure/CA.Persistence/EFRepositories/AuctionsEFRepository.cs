@@ -14,18 +14,18 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class AuctionsEFRepository : IAuctionsRepository
+    public class AuctionsEFRepository : IGenericRepository<Auction>
     {
         private readonly AuctionContext _context;
         public AuctionsEFRepository(AuctionContext context) => _context = context;
 
-        public async Task<bool> AddAsync(Auction entity)
+        public async Task<Auction> AddAsync(Auction entity)
         {
             try
             {
                 _context.Add(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -33,13 +33,13 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<bool> DeleteAsync(Auction entity)
+        public async Task<Auction> DeleteAsync(Auction entity)
         {
             try
             {
                 _context.Remove(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -91,56 +91,10 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<Auction> RemoveLotAsync(Auction auction, Lot lot)
+        public async Task<Auction> UpdateAsync(Auction auction)
         {
             try
             {
-                auction.Lots.Remove(lot);
-                await _context.SaveChangesAsync();
-                return auction;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Auction> AssignLotAsync(Auction auction, Lot lot)
-        {
-            try
-            {
-                auction.Lots.Add(lot);
-                await _context.SaveChangesAsync();
-                return auction;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Auction> ChangeParametersAsync(Auction auction, AuctionParametersModel parameters)
-        {
-            try
-            {
-                auction.Title = parameters.Title;
-                auction.OpenedAt = parameters.OpenedAt;
-                auction.ClosedAt = parameters.ClosedAt;
-
-                await _context.SaveChangesAsync();
-                return auction;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Auction> ChangeStatusAsync(Auction auction, short statusCode)
-        {
-            try
-            {
-                auction.StatusCode = statusCode;
                 await _context.SaveChangesAsync();
                 return auction;
             }

@@ -14,18 +14,18 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class CarsEFRepository : ICarsRepository
+    public class CarsEFRepository : IGenericRepository<Car>
     {
         private readonly AuctionContext _context;
         public CarsEFRepository(AuctionContext context) => _context = context;
 
-        public async Task<bool> AddAsync(Car entity)
+        public async Task<Car> AddAsync(Car entity)
         {
             try
             {
                 _context.Add(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -33,13 +33,13 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<bool> DeleteAsync(Car entity)
+        public async Task<Car> DeleteAsync(Car entity)
         {
             try
             {
                 _context.Remove(entity!);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
             catch (Exception)
             {
@@ -51,7 +51,7 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                var query = _context.Cars.AsNoTracking();
+                var query = _context.Auctions.AsNoTracking();
                 return await PagedList<Car>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
@@ -64,10 +64,9 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Cars
+                return await _context.Auctions
                     .AsNoTracking()
                     .Where(e => e.Id == id)
-                    .Include(e => e.Seller)
                     .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
@@ -81,9 +80,8 @@ namespace CA.Persistence.EFRepositories
         {
             try
             {
-                return await _context.Cars
+                return await _context.Auctions
                     .Where(e => e.Id == id)
-                    .Include(e => e.Seller)
                     .Include(e => e.Lots)
                     .FirstOrDefaultAsync();
             }
@@ -93,82 +91,12 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<Car> ChangeGradeAsync(Car car, short grade)
+        public async Task<Car> UpdateAsync(Car auction)
         {
             try
             {
-                car.Grade = grade;
                 await _context.SaveChangesAsync();
-                return car;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Car> ChangeMalfunctionsInfoAsync(Car car, CarMalfunctionsInfoModel parameters)
-        {
-            try
-            {
-                car.HasSuspensionMalfunctions = parameters.HasSuspensionMalfunctions;
-                car.FaultedElectronicsAmount = parameters.FaultedElectronicsAmount;
-                car.StrongScratchesAmount = parameters.StrongScratchesAmount;
-                car.SmallScratchesAmount = parameters.SmallScratchesAmount;
-
-                await _context.SaveChangesAsync();
-                return car;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Car> ChangeManufacturingInfoAsync(Car car, CarManufacturingInfoModel parameters)
-        {
-            try
-            {
-                car.Manufacturer = parameters.Manufacturer;
-                car.ManufacturingYear = parameters.ManufacturingYear;
-                car.Model = parameters.Model;
-                car.VIN = parameters.VIN;
-                car.MSRP = parameters.MSRP;
-
-                await _context.SaveChangesAsync();
-                return car;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Car> ChangeParametersAsync(Car car, CarParametersModel parameters)
-        {
-            try
-            {
-                car.OdometerValue = parameters.OdometerValue;
-                car.InternalColor = parameters.InternalColor;
-                car.ExternalColor = parameters.ExternalColor;
-
-                await _context.SaveChangesAsync();
-                return car;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
-            }
-        }
-
-        public async Task<Car> SetPriceAsync(Car car, decimal price)
-        {
-            try
-            {
-                car.StartingPrice = price;
-
-                await _context.SaveChangesAsync();
-                return car;
+                return auction;
             }
             catch (Exception)
             {
