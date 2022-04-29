@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace CA.Domain.RepositoryInterfaces
 {
-    public interface ITransactionsRepository
+    public interface ITransactionsRepository : IGenericRepository<Transaction>
     {
-        public Task<IEnumerable<Transaction>> AddAsync(Transaction firstOperation, Transaction secondOperation);
-        public Task<Transaction?> GetAsNoTracking(int id);
-        public Task<PagedList<Transaction>> GetAllAsync(PageSettingsModel settings);
+        public Task<List<Transaction>> AddAsync(Transaction firstOperation, Transaction secondOperation);
+        public Task<PagedList<Transaction>> GetUserTransactionsAsync(int userId, PageSettingsModel settings);
     }
 }

@@ -14,95 +14,20 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class CarsEFRepository : IGenericRepository<Car>
+    public class CarsEFRepository : GenericEFRepository<Car>, ICarsRepository
     {
-        private readonly AuctionContext _context;
-        public CarsEFRepository(AuctionContext context) => _context = context;
+        public CarsEFRepository(AuctionContext context) : base(context) { }
 
-        public async Task<Car> AddAsync(Car entity)
+        public Task<PagedList<Car>> GetUserCarsAsync(int userId, PageSettingsModel settings)
         {
             try
             {
-                await _context.AddAsync(entity!);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception)
-            {
-                throw new CreatingFailedException();
-            }
-        }
-
-        public async Task<Car> DeleteAsync(Car entity)
-        {
-            try
-            {
-                _context.Remove(entity!);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception)
-            {
-                throw new DeletingFailedException();
-            }
-        }
-
-        public async Task<PagedList<Car>> GetAllAsync(PageSettingsModel settings)
-        {
-            try
-            {
-                var query = _context.Cars.AsNoTracking();
-                return await PagedList<Car>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
+                var query = _table.AsNoTracking().Where(e => e.SellerId == userId);
+                return PagedList<Car>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
             {
                 throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Car?> GetAsNoTracking(int id)
-        {
-            try
-            {
-                return await _context.Cars
-                    .AsNoTracking()
-                    .Where(e => e.Id == id)
-                    .Include(e => e.Seller)
-                    .Include(e => e.Lots)
-                    .FirstOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Car?> GetAsync(int id)
-        {
-            try
-            {
-                return await _context.Cars
-                    .Where(e => e.Id == id)
-                    .Include(e => e.Seller)
-                    .Include(e => e.Lots)
-                    .FirstOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Car> UpdateAsync(Car auction)
-        {
-            try
-            {
-                await _context.SaveChangesAsync();
-                return auction;
-            }
-            catch (Exception)
-            {
-                throw new UpdatingFailedException();
             }
         }
     }

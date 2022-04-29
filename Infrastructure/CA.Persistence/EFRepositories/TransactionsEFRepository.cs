@@ -13,12 +13,11 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class TransactionsEFRepository : ITransactionsRepository
+    public class TransactionsEFRepository : GenericEFRepository<Transaction>, ITransactionsRepository
     {
-        private readonly AuctionContext _context;
-        public TransactionsEFRepository(AuctionContext context) => _context = context;
+        public TransactionsEFRepository(AuctionContext context) : base(context) { }
 
-        public async Task<IEnumerable<Transaction>> AddAsync(Transaction firstOperation, Transaction secondOperation)
+        public async Task<List<Transaction>> AddAsync(Transaction firstOperation, Transaction secondOperation)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -35,36 +34,19 @@ namespace CA.Persistence.EFRepositories
             }
             catch (Exception)
             {
+                await transaction.RollbackAsync();
                 throw new CreatingFailedException();
             }
-            finally
-            {
-                await transaction.RollbackAsync();
-            }
         }
 
-        public async Task<PagedList<Transaction>> GetAllAsync(PageSettingsModel settings)
+        public async Task<PagedList<Transaction>> GetUserTransactionsAsync(int userId, PageSettingsModel settings)
         {
             try
             {
-                var query = _context.Transactions.AsNoTracking();
-                return await PagedList<Transaction>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
-            }
-            catch (Exception e)
-            {
-                throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Transaction?> GetAsNoTracking(int id)
-        {
-            try
-            {
-                return await _context.Transactions
+                var query = _context.Transactions
                     .AsNoTracking()
-                    .Where(e => e.Id == id)
-                    .Include(e => e.User.Id)
-                    .FirstOrDefaultAsync();
+                    .Where(e => e.UserId == userId);
+                return await PagedList<Transaction>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
             {

@@ -13,61 +13,18 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class BidsEFRepository : IGenericRepository<Bid>
+    public class BidsEFRepository : GenericEFRepository<Bid>, IBidsRepository
     {
-        private readonly AuctionContext _context;
-        public BidsEFRepository(AuctionContext context) => _context = context;
+        public BidsEFRepository(AuctionContext context) : base(context) { }
 
-        public async Task<Bid> AddAsync(Bid entity)
+        public async Task<Bid?> GetLargestBid(int lotId)
         {
             try
             {
-                await _context.AddAsync(entity!);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception)
-            {
-                throw new CreatingFailedException();
-            }
-        }
-
-        public async Task<Bid> DeleteAsync(Bid entity)
-        {
-            try
-            {
-                _context.Remove(entity!);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception)
-            {
-                throw new DeletingFailedException();
-            }
-        }
-
-        public async Task<PagedList<Bid>> GetAllAsync(PageSettingsModel settings)
-        {
-            try
-            {
-                var query = _context.Bids.AsNoTracking();
-                return await PagedList<Bid>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
-            }
-            catch (Exception e)
-            {
-                throw new UnknownErrorException(e.Message);
-            }
-        }
-
-        public async Task<Bid?> GetAsNoTracking(int id)
-        {
-            try
-            {
-                return await _context.Bids
+                return await _table
                     .AsNoTracking()
-                    .Where(e => e.Id == id)
-                    .Include(e => e.User)
-                    .Include(e => e.Lot)
+                    .Where(e => e.LotId == lotId)
+                    .OrderByDescending(e => e.BidAmount)
                     .FirstOrDefaultAsync();
             }
             catch (Exception e)
@@ -76,15 +33,12 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<Bid?> GetAsync(int id)
+        public Task<PagedList<Bid>> GetLotBids(int lotId, PageSettingsModel settings)
         {
             try
             {
-                return await _context.Bids
-                    .Where(e => e.Id == id)
-                    .Include(e => e.User)
-                    .Include(e => e.Lot)
-                    .FirstOrDefaultAsync();
+                var query = _table.AsNoTracking().Where(e => e.LotId == lotId);
+                return PagedList<Bid>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
             catch (Exception e)
             {
@@ -92,16 +46,16 @@ namespace CA.Persistence.EFRepositories
             }
         }
 
-        public async Task<Bid> UpdateAsync(Bid auction)
+        public Task<PagedList<Bid>> GetUserBids(int userId, PageSettingsModel settings)
         {
             try
             {
-                await _context.SaveChangesAsync();
-                return auction;
+                var query = _table.AsNoTracking().Where(e => e.UserId == userId);
+                return PagedList<Bid>.ToPagedListAsync(query, settings.SelectedPage, settings.PageSize);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new UpdatingFailedException();
+                throw new UnknownErrorException(e.Message);
             }
         }
     }
