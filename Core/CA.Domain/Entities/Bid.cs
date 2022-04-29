@@ -9,8 +9,11 @@ namespace CA.Domain.Entities
 {
     public class Bid : BasicEntity
     {
+        public int LotId { get; set; }
         [ForeignKey("LotId")]
         public Lot Lot { get; set; } = null!;
+
+        public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
 

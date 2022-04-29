@@ -13,8 +13,10 @@ namespace CA.Domain.Entities
         [Column(TypeName = "decimal(9,2)")]
         public decimal? StartingPrice { get; set; }
 
+        public int SellerId { get; set; }
         [ForeignKey("SellerId")]
         public User Seller { get; set; } = null!;
+
         public List<Lot> Lots { get; set; } = new();
         
         // Car parameters
