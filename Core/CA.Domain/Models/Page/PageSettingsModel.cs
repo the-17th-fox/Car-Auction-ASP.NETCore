@@ -10,11 +10,11 @@ namespace CA.Domain.Models.Pages
     public class PageSettingsModel
     {
         [Required(ErrorMessage = ModelViolationMsg.RequiredViolation)]
-        [Range(minimum: 1, maximum: 100, ErrorMessage = "Invalid page size.")]
+        [Range(minimum: 1, maximum: 100, ErrorMessage = ModelViolationMsg.IncorrectRange)]
         public byte PageSize { get; set; }
 
         [Required(ErrorMessage = ModelViolationMsg.RequiredViolation)]
-        [Range(minimum: 1, maximum: short.MaxValue, ErrorMessage = "Invalid page number.")]
-        public short SelectedPage { get; set; } = 1;
+        [Range(minimum: 1, maximum: short.MaxValue, ErrorMessage = ModelViolationMsg.IncorrectRange)]
+        public short SelectedPage { get; set; }
     }
 }

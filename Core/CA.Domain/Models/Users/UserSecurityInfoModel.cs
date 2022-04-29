@@ -9,12 +9,12 @@ namespace CA.Domain.Models.Users
 {
     public class UserSecurityInfoModel
     {
-        [Required(ErrorMessage = "Phone number is required.")]
-        [Phone(ErrorMessage = "Phone number is incorrect.")]
+        [Required(ErrorMessage = ModelViolationMsg.RequiredViolation)]
+        [Phone(ErrorMessage = ModelViolationMsg.IncorrectData)]
         public string PhoneNumber { get; set; } = String.Empty;
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Email is invorrect.")]
+        [Required(ErrorMessage = ModelViolationMsg.RequiredViolation)]
+        [EmailAddress(ErrorMessage = ModelViolationMsg.IncorrectData)]
         public string Email { get; set; } = String.Empty;
     }
 }
