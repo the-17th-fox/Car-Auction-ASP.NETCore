@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class AuctionsEFRepository : GenericEFRepository<Auction>
+    public class AuctionsEFRepository : GenericEFRepository<Auction>, IAuctionsRepository
     {
         public AuctionsEFRepository(AuctionContext context) : base(context) { }
     }

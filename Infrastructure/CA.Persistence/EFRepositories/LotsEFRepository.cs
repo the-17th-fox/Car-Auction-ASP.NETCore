@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CA.Persistence.EFRepositories
 {
-    public class LotsEFRepository : GenericEFRepository<Lot>
+    public class LotsEFRepository : GenericEFRepository<Lot>, ILotsRepository
     {
         public LotsEFRepository(AuctionContext context) : base(context) { }
     }
