@@ -1,10 +1,13 @@
+using CA.Domain.Auth;
 using CA.Domain.Entities;
 using CA.Domain.Middlewares;
 using CA.Domain.RepositoryInterfaces;
 using CA.Persistence.Context;
 using CA.Persistence.EFRepositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,39 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<AuctionContext>();
 
+//Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+     .AddJwtBearer(options =>
+     {
+         options.SaveToken = true;
+         options.TokenValidationParameters = new TokenValidationParameters
+         {
+             ValidateIssuer = true,
+             ValidateAudience = true,
+             ValidateLifetime = true,
+             ValidateIssuerSigningKey = true,
+
+             ValidIssuer = TokenConfiguration.Issuer,
+             ValidAudience = TokenConfiguration.Audience,
+             IssuerSigningKey = TokenConfiguration.GetKey()
+         };
+     });
+
+//Authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuctionPolicies.DefaultRights, policy =>
+        policy.RequireRole(AuctionRoles.DefaultUser));
+
+    options.AddPolicy(AuctionPolicies.ElevatedRights, policy =>
+        policy.RequireRole(AuctionRoles.Administrator));
+});
+
 //AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -46,6 +82,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 //Middlewares
