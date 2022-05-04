@@ -1,13 +1,24 @@
 using CA.Domain.Entities;
 using CA.Domain.Middlewares;
+using CA.Domain.RepositoryInterfaces;
 using CA.Persistence.Context;
+using CA.Persistence.EFRepositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Context
 builder.Services.AddDbContext<AuctionContext>(context => context.UseSqlServer(builder.Configuration["connectionStrings:DatabaseConnection"]));
 
+//Repositories and abstractions
+builder.Services.AddScoped<ILotsRepository, LotsEFRepository>();
+builder.Services.AddScoped<ICarsRepository, CarsEFRepository>();
+builder.Services.AddScoped<IAuctionsRepository, AuctionsEFRepository>();
+builder.Services.AddScoped<ITransactionsRepository, TransactionsEFRepository>();
+builder.Services.AddScoped<IBidsRepository, BidsEFRepository>();
+
+//Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
     options.Password.RequiredLength = 5;
@@ -17,6 +28,9 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     options.Password.RequireDigit = false;
     options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<AuctionContext>();
+
+//AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -34,6 +48,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+//Middlewares
 app.UseMiddleware<ExceptionsHandlingMiddleware>();
 
 app.MapControllers();

@@ -10,6 +10,7 @@ namespace CA.Domain.Entities
 {
     public class Transaction : BasicEntity
     {
+        public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
 
